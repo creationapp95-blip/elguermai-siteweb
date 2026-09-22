@@ -229,14 +229,38 @@
         }
         
         .btn-blue {
-            background: var(--blue);
+            background: linear-gradient(135deg, var(--blue) 0%, var(--blue-deep) 100%);
             color: #fff;
             box-shadow: 0 14px 28px -10px rgba(37, 99, 235, .5);
         }
         
         .btn-blue:hover {
-            background: var(--blue-deep);
-            transform: translateY(-2px);
+            background: linear-gradient(135deg, var(--blue-deep) 0%, var(--blue) 100%);
+            transform: translateY(-3px);
+            box-shadow: 0 20px 42px -12px rgba(37, 99, 235, .65), 0 0 0 4px rgba(37, 99, 235, .12);
+        }
+        
+        .hero-cta .btn-blue span {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .hero-cta .btn-blue span::after {
+            content: "→";
+            transition: transform .25s ease;
+        }
+        
+        .hero-cta .btn-blue:hover span::after {
+            transform: translateX(4px);
+        }
+        
+        [dir="rtl"] .hero-cta .btn-blue span::after {
+            content: "←";
+        }
+        
+        [dir="rtl"] .hero-cta .btn-blue:hover span::after {
+            transform: translateX(-4px);
         }
         
         .btn-white {
@@ -261,13 +285,18 @@
         }
         
         .btn-outline-dark {
-            background: transparent;
+            background: rgba(255, 255, 255, .6);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
             color: var(--navy-deep);
             border: 1.5px solid var(--line);
         }
         
         .btn-outline-dark:hover {
             border-color: var(--navy-deep);
+            background: #fff;
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-soft);
         }
         
         .btn svg {
@@ -435,8 +464,22 @@
             direction: ltr;
         }
         
-        .ig-reel-track:hover .ig-reel-row {
+        .ig-reel-track:hover .ig-reel-row,
+        .ig-reel-track:focus-within .ig-reel-row {
             animation-play-state: paused;
+        }
+        
+        @media (prefers-reduced-motion: reduce) {
+            .ig-reel-track {
+                overflow-x: auto;
+                scrollbar-width: none;
+            }
+            .ig-reel-track::-webkit-scrollbar {
+                display: none;
+            }
+            .ig-reel-row {
+                animation: none;
+            }
         }
         
         .ig-reel-item {
@@ -448,6 +491,21 @@
             flex-shrink: 0;
             box-shadow: 0 22px 40px -18px rgba(0, 0, 0, .55);
             border: 1px solid rgba(255, 255, 255, .1);
+            /* visuel de secours si la vignette n'est pas encore dans /assets */
+            background: linear-gradient(150deg, var(--ig-1), var(--ig-2) 55%, var(--ig-3));
+            display: block;
+            transition: transform .3s ease, box-shadow .3s ease;
+        }
+        
+        .ig-reel-item:hover,
+        .ig-reel-item:focus-visible {
+            transform: translateY(-4px);
+            box-shadow: 0 26px 46px -16px rgba(0, 0, 0, .65);
+        }
+        
+        .ig-reel-item:focus-visible {
+            outline: 2px solid #fff;
+            outline-offset: 3px;
         }
         
         .ig-reel-item img {
@@ -509,7 +567,7 @@
             top: 0;
             left: 0;
             right: 0;
-            z-index: 200;
+            z-index: 260;
             padding: 20px 0;
             transition: all .3s ease;
         }
@@ -636,6 +694,45 @@
             padding: 150px 0 0;
             background: var(--ivory);
             overflow: hidden;
+            position: relative;
+        }
+        
+        .hero::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background-image: linear-gradient(rgba(37, 99, 235, .06) 1px, transparent 1px), linear-gradient(90deg, rgba(37, 99, 235, .06) 1px, transparent 1px);
+            background-size: 46px 46px;
+            -webkit-mask-image: radial-gradient(ellipse 75% 55% at 50% 0%, #000 40%, transparent 100%);
+            mask-image: radial-gradient(ellipse 75% 55% at 50% 0%, #000 40%, transparent 100%);
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        .hero-glow {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(90px);
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        .hero-glow.g1 {
+            width: 420px;
+            height: 420px;
+            top: -160px;
+            left: -110px;
+            background: radial-gradient(circle, rgba(37, 99, 235, .3), transparent 70%);
+            animation: floatY 15s ease-in-out infinite;
+        }
+        
+        .hero-glow.g2 {
+            width: 380px;
+            height: 380px;
+            top: 40px;
+            right: -140px;
+            background: radial-gradient(circle, rgba(91, 157, 255, .28), transparent 70%);
+            animation: floatY2 17s ease-in-out infinite;
         }
         
         .hero .wrap {
@@ -643,16 +740,42 @@
             grid-template-columns: .95fr 1.05fr;
             gap: 56px;
             align-items: center;
+            position: relative;
+            z-index: 1;
         }
         
         .hero-copy .eyebrow {
-            background: var(--sky);
+            background: rgba(255, 255, 255, .65);
+            border: 1px solid rgba(37, 99, 235, .16);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            box-shadow: 0 10px 26px -14px rgba(37, 99, 235, .3);
+        }
+        
+        .hero-copy .eyebrow .dot {
+            animation: pulseDot 1.8s ease-in-out infinite;
+        }
+        
+        @keyframes pulseDot {
+            0%, 100% {
+                box-shadow: 0 0 0 0 rgba(37, 99, 235, .45);
+            }
+            50% {
+                box-shadow: 0 0 0 6px rgba(37, 99, 235, 0);
+            }
         }
         
         .hero-copy h1 {
             font-size: clamp(34px, 4.4vw, 54px);
             line-height: 1.1;
             text-transform: none;
+        }
+        
+        .hero-copy h1 .accent {
+            background: linear-gradient(100deg, var(--blue-deep) 0%, var(--blue) 45%, var(--blue-light) 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
         }
         
         .hero-copy p.lead {
@@ -690,6 +813,7 @@
         
         .hero-media {
             position: relative;
+            perspective: 1200px;
         }
         
         .hero-media-frame {
@@ -698,6 +822,13 @@
             box-shadow: var(--shadow-lift);
             aspect-ratio: 4/4.6;
             position: relative;
+            border: 1px solid rgba(255, 255, 255, .5);
+            transform: rotateY(0deg) rotateX(0deg);
+            transition: transform .6s cubic-bezier(.2, .8, .2, 1);
+        }
+        
+        .hero-media:hover .hero-media-frame {
+            transform: rotateY(-4deg) rotateX(2deg);
         }
         
         .hero-media-frame video,
@@ -719,7 +850,10 @@
             left: -30px;
             bottom: 28px;
             z-index: 5;
-            background: #fff;
+            background: rgba(255, 255, 255, .78);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, .6);
             border-radius: 18px;
             padding: 16px 18px;
             box-shadow: var(--shadow-lift);
@@ -766,7 +900,10 @@
             top: 22px;
             right: -18px;
             z-index: 5;
-            background: #fff;
+            background: rgba(255, 255, 255, .78);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, .6);
             border-radius: 16px;
             padding: 14px 18px;
             box-shadow: var(--shadow-soft);
@@ -800,24 +937,30 @@
         /* ============ STATS ============ */
         
         .stats {
-            background: var(--navy-deep);
+            background: linear-gradient(180deg, var(--navy-deep) 0%, #0e2242 100%);
             margin-top: 90px;
+            padding: 26px 0;
         }
         
         .stats .wrap {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 0;
+            gap: 16px;
         }
         
         .stat-item {
-            padding: 38px 20px;
+            padding: 30px 20px;
             text-align: center;
-            border-right: 1px solid rgba(255, 255, 255, .08);
+            background: rgba(255, 255, 255, .04);
+            border: 1px solid rgba(255, 255, 255, .08);
+            border-radius: var(--radius-md);
+            transition: transform .3s ease, background .3s ease, border-color .3s ease;
         }
         
-        .stat-item:last-child {
-            border-right: none;
+        .stat-item:hover {
+            transform: translateY(-4px);
+            background: rgba(255, 255, 255, .07);
+            border-color: rgba(91, 157, 255, .35);
         }
         
         .stat-item svg {
@@ -2192,6 +2335,13 @@
                 background: var(--sky);
             }
         }
+        
+        @media(max-width:360px) {
+            .nav-main {
+                left: 12px;
+                right: 12px;
+            }
+        }
         /* ============ RETOUCHES MOBILE (texte, espacements, CTA) ============ */
         
         @media(max-width:680px) {
@@ -3063,6 +3213,8 @@
 
     <!-- ============ HERO ============ -->
     <section class="hero" id="top">
+        <div class="hero-glow g1"></div>
+        <div class="hero-glow g2"></div>
         <div class="wrap">
             <div class="hero-copy">
                 <div class="eyebrow"><span class="dot"></span><span data-i18n="hero_eyebrow">Cabinet dentaire à Marrakech</span></div>
@@ -3365,16 +3517,46 @@
                     </div>
                 </div>
             </div>
-            <div class="bk-cta-panel">
-                <div class="bk-motif-icon" style="font-size:44px;">🦷</div>
-                <h3 style="color:var(--navy-deep);font-size:21px;" data-i18n="bk_cta_title">Prêt à sourire à nouveau ?</h3>
-                <p style="color:var(--ink-soft);font-size:14.5px;max-width:340px;" data-i18n="bk_cta_sub">Choisissez un motif, une date et une heure : votre demande est envoyée en moins de 2 minutes.</p>
-                <button type="button" class="btn btn-blue js-book-btn" id="apptCtaBtn">
-                    <svg viewBox="0 0 24 24" fill="none"><path d="M8 3v3M16 3v3M4 9h16M5 6h14a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="m9 15 2 2 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                    <span data-i18n="hero_cta_whatsapp">Prendre rendez-vous</span>
+            <form class="appt-form" id="apptForm">
+                <div class="form-row">
+                    <label for="fName" data-i18n="form_name">Nom complet</label>
+                    <input type="text" id="fName" name="fName" required autocomplete="name" data-i18n-placeholder="form_name_ph" placeholder="Votre nom">
+                </div>
+                <div class="form-grid2">
+                    <div class="form-row">
+                        <label for="fPhone" data-i18n="form_phone">Téléphone</label>
+                        <input type="tel" id="fPhone" name="fPhone" required dir="ltr" autocomplete="tel">
+                    </div>
+                    <div class="form-row">
+                        <label for="fDate" data-i18n="form_date">Date souhaitée</label>
+                        <input type="date" id="fDate" name="fDate" dir="ltr">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <label for="fService" data-i18n="form_service">Soin souhaité</label>
+                    <select id="fService" name="fService">
+                        <option value="" data-i18n="svc_opt_default">Consultation générale</option>
+                        <option data-i18n="svc_1">Dentisterie générale</option>
+                        <option data-i18n="svc_2">Endodontie</option>
+                        <option data-i18n="svc_3">Parodontologie</option>
+                        <option data-i18n="svc_4">Prothèse dentaire</option>
+                        <option data-i18n="svc_5">Implantologie</option>
+                        <option data-i18n="svc_6">Chirurgie orale</option>
+                        <option data-i18n="svc_7">Dentisterie esthétique</option>
+                        <option data-i18n="svc_8">Orthodontie</option>
+                        <option data-i18n="svc_9">Pédodontie</option>
+                        <option data-i18n="svc_10">Radiologie dentaire</option>
+                        <option data-i18n="svc_11">Urgences dentaires</option>
+                        <option data-i18n="svc_12">Occlusodontie</option>
+                        <option data-i18n="svc_13">Prévention</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-blue">
+                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15L2 22l5.2-1.4A10 10 0 1 0 12 2Zm0 18a8 8 0 0 1-4.1-1.1l-.3-.2-3.1.8.8-3-.2-.3A8 8 0 1 1 12 20Zm4.4-5.9c-.2-.1-1.4-.7-1.6-.8-.2-.1-.4-.1-.5.1-.2.2-.6.8-.8 1-.1.1-.3.2-.5.1-.7-.3-1.4-.7-2-1.3-.5-.5-1-1.1-1.4-1.7-.1-.2 0-.4.1-.5l.4-.4c.1-.1.2-.3.2-.4.1-.1 0-.3 0-.4-.1-.1-.5-1.3-.7-1.7-.2-.5-.4-.4-.5-.4h-.5c-.2 0-.4.1-.6.3-.6.6-.9 1.3-.9 2.1.1.9.4 1.8 1 2.6 1 1.5 2.2 2.7 3.7 3.5.5.2.8.4 1.2.5.5.2 1 .1 1.5 0 .5-.1 1.4-.6 1.6-1.1.2-.5.2-1 .1-1.1-.1-.1-.2-.1-.4-.2Z"/></svg>
+                    <span data-i18n="form_submit">Envoyer via WhatsApp</span>
                 </button>
-                <span class="bk-cta-note" data-i18n="bk_cta_note">Réponse sous 24h ouvrées · Sans engagement</span>
-            </div>
+                <p class="form-note" data-i18n="form_note">Vous serez redirigé vers WhatsApp pour confirmer votre message.</p>
+            </form>
         </div>
     </section>
 
@@ -3389,10 +3571,10 @@
                         <div><b data-i18n="loc_addr_label">Adresse</b><span data-i18n="loc_addr_value">Avenue Moulay Abdellah, Centre d'affaires Nota Mia, à côté du café — Attawfiq, 40000 Marrakech</span></div>
                     </div>
                     <div class="loc-row"><svg viewBox="0 0 24 24" fill="none"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2C9.6 21 3 14.4 3 6a2 2 0 0 1 2-2Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>
-                        <div><b data-i18n="loc_phone_label">Téléphone</b><span>05 24 42 30 34</span></div>
+                        <div><b data-i18n="loc_phone_label">Téléphone</b><span dir="ltr">05 24 42 30 34</span></div>
                     </div>
                     <div class="loc-row"><svg viewBox="0 0 24 24" fill="none"><path d="M12 8v4l3 2M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Z" stroke="currentColor" stroke-width="1.7"/></svg>
-                        <div><b data-i18n="loc_hours_label">Horaires</b><span data-i18n="loc_hours_value">Lun – Sam · 9h00 – 19h00</span></div>
+                        <div><b data-i18n="loc_hours_label">Horaires</b><span data-i18n="loc_hours_value" dir="ltr">Lun – Sam · 9h00 – 19h00</span></div>
                     </div>
                     <div class="loc-cta">
                         <a class="btn btn-blue" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query=Centre%20Dentaire%20ElGuermai%20Avenue%20Moulay%20Abdellah%20Marrakech"><svg viewBox="0 0 24 24" fill="none"><path d="M12 21s7-6.1 7-11.5A7 7 0 0 0 5 9.5C5 14.9 12 21 12 21Z" stroke="currentColor" stroke-width="1.8"/></svg><span data-i18n="loc_cta_map">Itinéraire Google Maps</span></a>
@@ -3422,7 +3604,7 @@
                     </div>
                     <div class="foot-col"><b data-i18n="foot_col2">Contact</b>
                         <ul>
-                            <li>05 24 42 30 34</li>
+                            <li dir="ltr">05 24 42 30 34</li>
                             <li data-i18n="loc_addr_short">Av. Moulay Abdellah, Marrakech</li>
                             <li><a href="#appointment" class="js-book-btn" data-i18n="hero_cta_whatsapp">Prendre rendez-vous</a></li>
                         </ul>
@@ -3538,44 +3720,6 @@
                 form_service: "Soin souhaité",
                 form_submit: "Envoyer via WhatsApp",
                 form_note: "Vous serez redirigé vers WhatsApp pour confirmer votre message.",
-                form_phone_ph: "06 XX XX XX XX",
-                bk_cta_title: "Prêt à sourire à nouveau ?",
-                bk_cta_sub: "Choisissez un motif, une date et une heure : votre demande est envoyée en moins de 2 minutes.",
-                bk_cta_note: "Réponse sous 24h ouvrées · Sans engagement",
-                bk_modal_title: "Prendre rendez-vous",
-                bk_step1_title: "Quel est le motif de votre visite ?",
-                bk_step1_sub: "Choisissez le soin qui vous intéresse",
-                bk_motif_other: "Autre / une question",
-                bk_step2_title: "Choisissez une date",
-                bk_step2_sub: "Le cabinet est ouvert du lundi au samedi, 9h – 19h",
-                bk_step3_title: "Choisissez un horaire",
-                bk_step3_sub: "Sélectionnez l'heure qui vous arrange",
-                bk_step4_title: "Vos coordonnées",
-                bk_step4_sub: "Pour que le cabinet puisse confirmer votre rendez-vous",
-                bk_field_notes_label: "Message (optionnel)",
-                bk_field_notes_ph: "Précisez votre demande si besoin…",
-                bk_consent_label: "J'accepte d'être contacté(e) par téléphone ou WhatsApp au sujet de ma demande de rendez-vous.",
-                bk_step5_title: "Vérifiez votre demande",
-                bk_step5_sub: "Dernière étape avant l'envoi",
-                bk_summary_motif: "Motif",
-                bk_summary_date: "Date",
-                bk_summary_time: "Heure",
-                bk_summary_name: "Nom",
-                bk_summary_phone: "Téléphone",
-                bk_summary_notes: "Message",
-                bk_btn_next: "Continuer",
-                bk_btn_back: "Retour",
-                bk_btn_edit: "Modifier",
-                bk_done_title: "Demande envoyée !",
-                bk_done_sub: "Vous allez être redirigé(e) vers WhatsApp pour confirmer votre rendez-vous avec le cabinet.",
-                bk_btn_close: "Fermer",
-                bk_err_motif: "Merci de choisir un motif.",
-                bk_err_date: "Merci de choisir une date.",
-                bk_err_time: "Merci de choisir un horaire.",
-                bk_err_name: "Merci d'indiquer votre nom.",
-                bk_err_phone: "Merci d'indiquer un numéro de téléphone valide.",
-                bk_err_consent: "Merci d'accepter d'être contacté(e) pour continuer.",
-                bk_closed_sunday: "Fermé le dimanche",
                 loc_eyebrow: "Nous trouver",
                 loc_title: "À Marrakech, <span class=\"accent\">facile d'accès</span>.",
                 loc_addr_label: "Adresse",
@@ -3693,44 +3837,6 @@
                 form_service: "Treatment needed",
                 form_submit: "Send via WhatsApp",
                 form_note: "You'll be redirected to WhatsApp to confirm your message.",
-                form_phone_ph: "06 XX XX XX XX",
-                bk_cta_title: "Ready to smile again?",
-                bk_cta_sub: "Choose a reason, a date and a time: your request is sent in under 2 minutes.",
-                bk_cta_note: "Response within 24 business hours · No commitment",
-                bk_modal_title: "Book an appointment",
-                bk_step1_title: "What's the reason for your visit?",
-                bk_step1_sub: "Choose the treatment you're interested in",
-                bk_motif_other: "Other / a question",
-                bk_step2_title: "Choose a date",
-                bk_step2_sub: "The practice is open Monday to Saturday, 9am – 7pm",
-                bk_step3_title: "Choose a time",
-                bk_step3_sub: "Pick the time that suits you",
-                bk_step4_title: "Your details",
-                bk_step4_sub: "So the practice can confirm your appointment",
-                bk_field_notes_label: "Message (optional)",
-                bk_field_notes_ph: "Add any details if needed…",
-                bk_consent_label: "I agree to be contacted by phone or WhatsApp about my appointment request.",
-                bk_step5_title: "Check your request",
-                bk_step5_sub: "One last look before sending",
-                bk_summary_motif: "Reason",
-                bk_summary_date: "Date",
-                bk_summary_time: "Time",
-                bk_summary_name: "Name",
-                bk_summary_phone: "Phone",
-                bk_summary_notes: "Message",
-                bk_btn_next: "Continue",
-                bk_btn_back: "Back",
-                bk_btn_edit: "Edit",
-                bk_done_title: "Request sent!",
-                bk_done_sub: "You'll be redirected to WhatsApp to confirm your appointment with the practice.",
-                bk_btn_close: "Close",
-                bk_err_motif: "Please choose a reason.",
-                bk_err_date: "Please choose a date.",
-                bk_err_time: "Please choose a time.",
-                bk_err_name: "Please enter your name.",
-                bk_err_phone: "Please enter a valid phone number.",
-                bk_err_consent: "Please agree to be contacted to continue.",
-                bk_closed_sunday: "Closed on Sundays",
                 loc_eyebrow: "Find us",
                 loc_title: "In Marrakech, <span class=\"accent\">easy to reach</span>.",
                 loc_addr_label: "Address",
@@ -3848,44 +3954,6 @@
                 form_service: "العلاج المطلوب",
                 form_submit: "إرسال عبر واتساب",
                 form_note: "سيتم تحويلكم إلى واتساب لتأكيد رسالتكم.",
-                form_phone_ph: "06 XX XX XX XX",
-                bk_cta_title: "هل أنتم مستعدون لابتسامة جديدة؟",
-                bk_cta_sub: "اختاروا السبب والتاريخ والوقت: يُرسل طلبكم في أقل من دقيقتين.",
-                bk_cta_note: "الرد خلال 24 ساعة عمل · بدون التزام",
-                bk_modal_title: "حجز موعد",
-                bk_step1_title: "ما هو سبب زيارتكم؟",
-                bk_step1_sub: "اختاروا العلاج الذي يهمكم",
-                bk_motif_other: "أخرى / سؤال",
-                bk_step2_title: "اختاروا تاريخًا",
-                bk_step2_sub: "العيادة مفتوحة من الاثنين إلى السبت، من 9 صباحًا إلى 7 مساءً",
-                bk_step3_title: "اختاروا موعدًا",
-                bk_step3_sub: "اختاروا الوقت الذي يناسبكم",
-                bk_step4_title: "بياناتكم",
-                bk_step4_sub: "لكي تتمكن العيادة من تأكيد موعدكم",
-                bk_field_notes_label: "رسالة (اختياري)",
-                bk_field_notes_ph: "أضيفوا أي تفاصيل إذا لزم الأمر…",
-                bk_consent_label: "أوافق على أن يتم التواصل معي عبر الهاتف أو واتساب بخصوص طلب موعدي.",
-                bk_step5_title: "تحققوا من طلبكم",
-                bk_step5_sub: "نظرة أخيرة قبل الإرسال",
-                bk_summary_motif: "السبب",
-                bk_summary_date: "التاريخ",
-                bk_summary_time: "الوقت",
-                bk_summary_name: "الاسم",
-                bk_summary_phone: "الهاتف",
-                bk_summary_notes: "الرسالة",
-                bk_btn_next: "متابعة",
-                bk_btn_back: "رجوع",
-                bk_btn_edit: "تعديل",
-                bk_done_title: "تم إرسال الطلب!",
-                bk_done_sub: "سيتم تحويلكم إلى واتساب لتأكيد موعدكم مع العيادة.",
-                bk_btn_close: "إغلاق",
-                bk_err_motif: "الرجاء اختيار سبب الزيارة.",
-                bk_err_date: "الرجاء اختيار تاريخ.",
-                bk_err_time: "الرجاء اختيار موعد.",
-                bk_err_name: "الرجاء إدخال اسمكم.",
-                bk_err_phone: "الرجاء إدخال رقم هاتف صحيح.",
-                bk_err_consent: "الرجاء الموافقة على التواصل معكم للمتابعة.",
-                bk_closed_sunday: "مغلق يوم الأحد",
                 loc_eyebrow: "موقعنا",
                 loc_title: "في مراكش، <span class=\"accent\">سهل الوصول</span>.",
                 loc_addr_label: "العنوان",
@@ -3933,6 +4001,9 @@
             document.documentElement.setAttribute('dir', lang === 'ar' ? 'rtl' : 'ltr');
             document.body.classList.toggle('lang-ar', lang === 'ar');
             document.querySelectorAll('#langSwitch button').forEach(b => b.classList.toggle('active', b.getAttribute('data-lang') === lang));
+            document.dispatchEvent(new CustomEvent('sitelangchange', {
+                detail: lang
+            }));
         }
         document.getElementById('langSwitch').addEventListener('click', e => {
             const btn = e.target.closest('button[data-lang]');
@@ -4077,30 +4148,41 @@
         renderReviews('fr');
 
         /* ============ INSTAGRAM PHOTO STRIP ============ */
+        /* IG_PROFILE = compte du cabinet. Pour chaque vignette, "url" est
+           facultatif : mets le lien direct du reel (https://www.instagram.com/reel/XXXX/)
+           quand tu l'as, sinon le clic renvoie vers le profil. */
+        const IG_PROFILE = "https://www.instagram.com/elguermai_dentaire/";
         const igClips = [{
             img: "assets/img/poster-reel-2.jpg",
-            tagKey: "ig_tag1"
+            tagKey: "ig_tag1",
+            url: ""
         }, {
             img: "assets/img/poster-reel-3.jpg",
-            tagKey: "ig_tag2"
+            tagKey: "ig_tag2",
+            url: ""
         }, {
             img: "assets/img/poster-reel-4.jpg",
-            tagKey: "ig_tag3"
+            tagKey: "ig_tag3",
+            url: ""
         }, {
             img: "assets/img/poster-reel-1.jpg",
-            tagKey: "ig_tag4"
+            tagKey: "ig_tag4",
+            url: ""
         }, {
             img: "assets/img/poster-reel-5.jpg",
-            tagKey: "ig_tag5"
+            tagKey: "ig_tag5",
+            url: ""
         }, {
             img: "assets/img/poster-reel-6.jpg",
-            tagKey: "ig_tag6"
+            tagKey: "ig_tag6",
+            url: ""
         }, ];
 
-        function buildIgItem(c, dict) {
+        function buildIgItem(c, dict, clone) {
             const tag = dict[c.tagKey] || '';
-            return `<a class="ig-reel-item" href="https://www.instagram.com/elguermai_dentaire/" target="_blank" rel="noopener">
-    <img src="${c.img}" alt="${tag}" loading="lazy">
+            const href = c.url || IG_PROFILE;
+            return `<a class="ig-reel-item" href="${href}" target="_blank" rel="noopener"${clone ? ' aria-hidden="true" tabindex="-1"' : ` aria-label="${tag} — Instagram"`}>
+    <img src="${c.img}" alt="" loading="lazy" decoding="async" onerror="this.style.display='none'">
     <span class="ig-reel-tag"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7-11-7Z"/></svg>${tag}</span>
   </a>`;
         }
@@ -4109,9 +4191,18 @@
         function renderIgStrip(lang) {
             if (!igRow) return;
             const dict = translations[lang] || translations.fr;
-            igRow.innerHTML = igClips.map(c => buildIgItem(c, dict)).join('') + igClips.map(c => buildIgItem(c, dict)).join('');
+            /* la 2e série est une copie visuelle : masquee aux lecteurs d'ecran
+               et hors tabulation, pour un defilement sans coupure */
+            igRow.innerHTML = igClips.map(c => buildIgItem(c, dict, false)).join('') +
+                igClips.map(c => buildIgItem(c, dict, true)).join('');
         }
         renderIgStrip('fr');
+
+        /* le bandeau IG et les avis suivent maintenant le changement de langue */
+        document.addEventListener('sitelangchange', e => {
+            renderIgStrip(e.detail);
+            if (typeof renderReviews === 'function') renderReviews(e.detail);
+        });
 
 
         const lightbox = document.getElementById('lightbox'),
