@@ -646,10 +646,24 @@
             color: var(--blue);
         }
         
+        .site-header .wrap {
+            flex-wrap: nowrap;
+            padding-left: 16px;
+            padding-right: 16px;
+        }
+        
         .header-right {
             display: flex;
             align-items: center;
             gap: 16px;
+            flex-shrink: 0;
+        }
+        
+        .header-book-btn {
+            padding: 12px 20px;
+            font-size: 13.5px;
+            white-space: nowrap;
+            flex-shrink: 0;
         }
         
         .lang-switch {
@@ -2256,16 +2270,27 @@
             }
         }
         
-        @media(max-width:430px) {
+        @media(max-width:768px) {
+            .site-header .wrap {
+                padding-left: 16px;
+                padding-right: 16px;
+            }
             .header-right {
                 gap: 8px;
             }
-            .header-right .btn-blue {
-                padding: 10px 14px;
+            /* Bouton "Prendre rendez-vous" du header : transformé en icône
+               compacte sur mobile (le CTA WhatsApp flottant reste l'action
+               principale, ce bouton texte prendrait trop de place). */
+            .header-right .header-book-btn {
+                padding: 10px;
                 font-size: 0;
                 gap: 0;
+                width: 38px;
+                height: 38px;
+                justify-content: center;
+                border-radius: 10px;
             }
-            .header-right .btn-blue svg {
+            .header-right .header-book-btn svg {
                 width: 18px;
                 height: 18px;
             }
@@ -2278,6 +2303,12 @@
             }
             .brand small {
                 font-size: 8.5px;
+            }
+        }
+        
+        @media(max-width:430px) {
+            .header-right {
+                gap: 6px;
             }
         }
         /* ============ SCROLL OFFSET (header fixe) ============ */
@@ -3198,7 +3229,7 @@
                     <button data-lang="en">EN</button>
                     <button data-lang="ar">AR</button>
                 </div>
-                <a href="#appointment" class="btn btn-blue js-book-btn" style="padding:12px 20px;font-size:13.5px;">
+                <a href="#appointment" class="btn btn-blue js-book-btn header-book-btn" aria-label="Prendre rendez-vous">
                     <svg viewBox="0 0 24 24" fill="none"><path d="M8 3v3M16 3v3M4 9h16M5 6h14a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="m9 15 2 2 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
                     <span data-i18n="hero_cta_whatsapp">Prendre rendez-vous</span>
                 </a>
