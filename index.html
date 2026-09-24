@@ -3492,25 +3492,206 @@
         </div>
     </section>
 
-    <!-- ============ GALLERY ============ -->
-    <section class="gallery pad" id="gallery">
-        <div class="wrap">
-            <div class="section-head">
-                <div class="eyebrow"><span class="dot"></span><span data-i18n="gal_eyebrow">Le cabinet</span></div>
-                <h2 data-i18n-html="gal_title">Un cadre pensé pour <span class="accent">rassurer</span>.</h2>
-            </div>
-            <div class="gal-grid reveal">
-                <div class="gal-item b1" data-full="assets/img/salle-soin-1.jpg" data-cap="Salle de soin principale"><img src="assets/img/salle-soin-1.jpg" alt="Salle de soin"><span class="gal-cap" data-i18n="gal_cap1">Salle de soin principale</span></div>
-                <div class="gal-item" data-full="assets/img/reception-sign.jpg" data-cap="Accueil du cabinet"><img src="assets/img/reception-sign.jpg" alt="Accueil"><span class="gal-cap" data-i18n="gal_cap2">Accueil</span></div>
-                <div class="gal-item" data-full="assets/img/instruments.jpg" data-cap="Instruments stérilisés"><img src="assets/img/instruments.jpg" alt="Instruments"><span class="gal-cap" data-i18n="gal_cap3">Instruments</span></div>
-                <div class="gal-item b2" data-full="assets/img/salle-soin-2.jpg" data-cap="Deuxième salle de soin"><img src="assets/img/salle-soin-2.jpg" alt="Salle de soin lumineuse"><span class="gal-cap" data-i18n="gal_cap4">Salle lumineuse</span></div>
-                <div class="gal-item" data-full="assets/img/soin-laser-1.jpg" data-cap="Soin au laser"><img src="assets/img/soin-laser-1.jpg" alt="Soin au laser"><span class="gal-cap" data-i18n="gal_cap5">Technologie laser</span></div>
-                <div class="gal-item" data-full="assets/img/sterilisation.jpg" data-cap="Protocole de stérilisation"><img src="assets/img/sterilisation.jpg" alt="Stérilisation"><span class="gal-cap" data-i18n="gal_cap6">Stérilisation</span></div>
-                <div class="gal-item" data-full="assets/img/office-desk.jpg" data-cap="Le cabinet"><img src="assets/img/office-desk.jpg" alt="Bureau de consultation"><span class="gal-cap" data-i18n="gal_cap7">Le cabinet</span></div>
-                <div class="gal-item" data-full="assets/img/consultation.jpg" data-cap="Consultation"><img src="assets/img/consultation.jpg" alt="Consultation avec le patient"><span class="gal-cap" data-i18n="gal_cap8">Consultation</span></div>
-            </div>
+   <!-- ============ GALLERY (bandeau animé) ============ -->
+<style>
+    /* ---- Galerie : bandeau animé ---- */
+    .gallery {
+        background: var(--ivory);
+        overflow: hidden;
+    }
+
+    .gal-track {
+        overflow: hidden;
+        position: relative;
+        margin: 0 -28px;
+        padding: 0 28px;
+        direction: ltr;
+    }
+
+    /* voiles latéraux pour un fondu propre aux bords du bandeau */
+    .gal-track::before,
+    .gal-track::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        width: 90px;
+        z-index: 3;
+        pointer-events: none;
+    }
+
+    .gal-track::before {
+        left: 0;
+        background: linear-gradient(90deg, var(--ivory) 10%, transparent 100%);
+    }
+
+    .gal-track::after {
+        right: 0;
+        background: linear-gradient(270deg, var(--ivory) 10%, transparent 100%);
+    }
+
+    .gal-row {
+        display: flex;
+        gap: 22px;
+        width: max-content;
+        direction: ltr;
+        animation: galScroll 42s linear infinite;
+    }
+
+    .gal-track:hover .gal-row,
+    .gal-track:focus-within .gal-row {
+        animation-play-state: paused;
+    }
+
+    @keyframes galScroll {
+        from { transform: translateX(0); }
+        to   { transform: translateX(-50%); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .gal-track {
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+        .gal-track::-webkit-scrollbar { display: none; }
+        .gal-row { animation: none; }
+        .gal-track::before,
+        .gal-track::after { display: none; }
+    }
+
+    .gal-card {
+        position: relative;
+        flex-shrink: 0;
+        width: 300px;
+        aspect-ratio: 4/5;
+        border-radius: var(--radius-md);
+        overflow: hidden;
+        cursor: pointer;
+        box-shadow: 0 18px 40px -20px rgba(16, 25, 43, .3);
+        border: 1px solid var(--line);
+        transition: transform .35s cubic-bezier(.2,.8,.2,1), box-shadow .35s ease;
+    }
+
+    .gal-card:nth-child(odd) {
+        transform: translateY(14px);
+    }
+
+    .gal-card:hover,
+    .gal-card:focus-visible {
+        transform: translateY(-6px) scale(1.02);
+        box-shadow: var(--shadow-lift);
+        z-index: 2;
+    }
+
+    .gal-card:nth-child(odd):hover {
+        transform: translateY(8px) scale(1.02);
+    }
+
+    .gal-card:focus-visible {
+        outline: 2px solid var(--blue);
+        outline-offset: 3px;
+    }
+
+    .gal-card img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+        transition: transform .6s ease;
+    }
+
+    .gal-card:hover img {
+        transform: scale(1.08);
+    }
+
+    .gal-card::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(180deg, transparent 55%, rgba(11,30,59,.78) 100%);
+        opacity: .55;
+        transition: opacity .3s ease;
+    }
+
+    .gal-card:hover::after {
+        opacity: .85;
+    }
+
+    .gal-card-num {
+        position: absolute;
+        top: 14px;
+        left: 14px;
+        z-index: 2;
+        background: rgba(255,255,255,.85);
+        backdrop-filter: blur(6px);
+        color: var(--navy-deep);
+        font-size: 11.5px;
+        font-weight: 800;
+        letter-spacing: .04em;
+        padding: 5px 10px;
+        border-radius: 100px;
+        opacity: 0;
+        transform: translateY(-6px);
+        transition: opacity .3s ease, transform .3s ease;
+    }
+
+    .gal-card:hover .gal-card-num {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    .gal-cap {
+        position: absolute;
+        left: 16px;
+        right: 16px;
+        bottom: 16px;
+        z-index: 2;
+        color: #fff;
+        font-size: 14px;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        transform: translateY(8px);
+        opacity: 0;
+        transition: transform .3s ease, opacity .3s ease;
+    }
+
+    .gal-cap svg {
+        width: 15px;
+        height: 15px;
+        flex-shrink: 0;
+        opacity: .85;
+    }
+
+    .gal-card:hover .gal-cap {
+        transform: translateY(0);
+        opacity: 1;
+    }
+
+    @media (max-width: 680px) {
+        .gal-card { width: 220px; }
+        .gal-track { margin: 0 -20px; padding: 0 20px; }
+        .gal-track::before,
+        .gal-track::after { width: 50px; }
+        .gal-row { gap: 16px; }
+        .gal-card:nth-child(odd) { transform: none; }
+        .gal-card:nth-child(odd):hover { transform: translateY(-6px) scale(1.02); }
+    }
+</style>
+
+<section class="gallery pad" id="gallery">
+    <div class="wrap">
+        <div class="section-head">
+            <div class="eyebrow"><span class="dot"></span><span data-i18n="gal_eyebrow">Le cabinet</span></div>
+            <h2 data-i18n-html="gal_title">Un cadre pensé pour <span class="accent">rassurer</span>.</h2>
         </div>
-    </section>
+    </div>
+
+    <div class="gal-track reveal">
+        <div class="gal-row" id="galRow"></div>
+    </div>
+</section>
 
     <!-- ============ TECH FEATURE ============ -->
     <section class="tech pad">
